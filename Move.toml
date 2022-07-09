@@ -1,0 +1,23 @@
+[package]
+name = "MintWrapper"
+version = "0.0.0"
+authors = ["Ian Macalinao <ian@moving.wtf>"]
+license = "Apache-2.0"
+
+[readme]
+title = "The Aptosis Mint Wrapper"
+
+[addresses]
+Std = "0x1"
+AptosFramework = "0x1"
+MintWrapper = "0xf5e704bf5bcc9b03be34c09c526b8618aa12c45f9ecdec6afef2f5b66913bc7b"
+
+[dependencies.MoveStdlib]
+git = "https://github.com/aptos-labs/aptos-core.git"
+subdir = "aptos-move/framework/move-stdlib"
+rev = "45140fcf79c2afd3ce8c86bb9952e90632533cbb"
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+subdir = "aptos-move/framework/aptos-framework"
+rev = "45140fcf79c2afd3ce8c86bb9952e90632533cbb"
