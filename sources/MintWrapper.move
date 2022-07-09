@@ -135,9 +135,19 @@ module MintWrapper::MintWrapper {
         Coin::deposit<CoinType>(recipient, coin);
     }
 
+    /// Entry function for [create_with_coin].
+    public(script) fun do_create_with_coin<CoinType>(
+        account: &signer,
+        name: vector<u8>,
+        decimals: u64,
+        hard_cap: u64
+    ) {
+        create_with_coin<CoinType>(account, name, decimals, hard_cap)
+    }
+
     /// Creates a new coin and mint_wrapper.
     /// The given account also becomes the MintWrapper's base.
-    public(script) fun create_with_coin<CoinType>(
+    public fun create_with_coin<CoinType>(
         account: &signer,
         name: vector<u8>,
         decimals: u64,
@@ -150,7 +160,6 @@ module MintWrapper::MintWrapper {
             decimals,
             true
         );
-
         move_to(account, create(account, mint_capability, burn_capability, hard_cap));
     }
 
