@@ -120,7 +120,7 @@ module MintWrapper::MintWrapper {
     }
 
     /// Mints coins from the mint_wrapper on behalf of the mint_wrapper's authority.
-    public(script) fun mint<CoinType>(
+    public fun mint<CoinType>(
         authority: &signer,
         recipient: address,
         amount: u64
@@ -133,16 +133,6 @@ module MintWrapper::MintWrapper {
         let mint_wrapper_minter = borrow_global_mut<Minter<CoinType>>(authority_addr);
         let coin = mint_with_capability(mint_wrapper_minter, amount);
         Coin::deposit<CoinType>(recipient, coin);
-    }
-
-    /// Entry function for [create_with_coin].
-    public(script) fun do_create_with_coin<CoinType>(
-        account: &signer,
-        name: vector<u8>,
-        decimals: u64,
-        hard_cap: u64
-    ) {
-        create_with_coin<CoinType>(account, name, decimals, hard_cap)
     }
 
     /// Creates a new coin and mint_wrapper.
@@ -164,7 +154,7 @@ module MintWrapper::MintWrapper {
     }
 
     /// Offers the owner.
-    public(script) fun offer_owner<CoinType>(
+    public fun offer_owner<CoinType>(
         account: &signer,
         recipient: address
     ) acquires Owner {
@@ -176,7 +166,7 @@ module MintWrapper::MintWrapper {
     }
 
     /// Accepts the owner.
-    public(script) fun accept_owner<CoinType>(
+    public fun accept_owner<CoinType>(
         recipient: &signer,
         base: address
     ) {
@@ -184,7 +174,7 @@ module MintWrapper::MintWrapper {
     }
 
     /// Creates a new minter with the given allowance, offering it.
-    public(script) fun offer_minter<CoinType>(
+    public fun offer_minter<CoinType>(
         owner: &signer,
         destination: address,
         allowance: u64
@@ -199,8 +189,8 @@ module MintWrapper::MintWrapper {
         Table::add(&mut offers.offers, destination, minter);
     }
 
-    /// Accepts the minter if possible.
-    public(script) fun accept_minter<CoinType>(
+    /// Accepts the [Minter] for the `CoinType`.
+    public fun accept_minter<CoinType>(
         recipient: &signer,
         base: address
     ) acquires MinterOffers {
