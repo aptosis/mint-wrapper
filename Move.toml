@@ -10,7 +10,7 @@ title = "Aptosis Mint Wrapper"
 [addresses]
 Std = "0x1"
 AptosFramework = "0x1"
-MintWrapper = "0xf5e704bf5bcc9b03be34c09c526b8618aa12c45f9ecdec6afef2f5b66913bc7b"
+MintWrapper = "8ba8418d5dd4d19b04bed4bc6e288f326a58fddca571a561994cb09475d18817"
 
 [dependencies.MoveStdlib]
 git = "https://github.com/aptos-labs/aptos-core.git"
