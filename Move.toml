@@ -5,7 +5,7 @@ authors = ["Ian Macalinao <ian@moving.wtf>"]
 license = "Apache-2.0"
 
 [readme]
-title = "The Aptosis Mint Wrapper"
+title = "Aptosis Mint Wrapper"
 
 [addresses]
 Std = "0x1"
