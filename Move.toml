@@ -1,5 +1,5 @@
 [package]
-name = "MintWrapper"
+name = "mint_wrapper"
 version = "0.0.0"
 authors = ["Ian Macalinao <ian@moving.wtf>"]
 license = "Apache-2.0"
@@ -8,16 +8,14 @@ license = "Apache-2.0"
 title = "Aptosis Mint Wrapper"
 
 [addresses]
-Std = "0x1"
-AptosFramework = "0x1"
-MintWrapper = "0x8f6ce396d6c4b9c7c992f018e94df010ec5c50835d1c83186c023bfa22df638c"
+mint_wrapper = "0x8f6ce396d6c4b9c7c992f018e94df010ec5c50835d1c83186c023bfa22df638c"
 
 [dependencies.MoveStdlib]
 git = "https://github.com/aptos-labs/aptos-core.git"
 subdir = "aptos-move/framework/move-stdlib"
-rev = "45140fcf79c2afd3ce8c86bb9952e90632533cbb"
+rev = "a3143756d498821f4f51a5970c7ea35d483938b3"
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-core.git"
 subdir = "aptos-move/framework/aptos-framework"
-rev = "45140fcf79c2afd3ce8c86bb9952e90632533cbb"
+rev = "a3143756d498821f4f51a5970c7ea35d483938b3"

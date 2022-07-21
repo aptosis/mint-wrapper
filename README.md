@@ -11,11 +11,11 @@ There are two roles one can possess with a `MintWrapper`:
 
 ## Installation
 
-To use MintWrapper in your code, add the following to the `[addresses]` section of your `Move.toml`:
+To use mint_wrapper in your code, add the following to the `[addresses]` section of your `Move.toml`:
 
 ```toml
 [addresses]
-MintWrapper = "0x8f6ce396d6c4b9c7c992f018e94df010ec5c50835d1c83186c023bfa22df638c"
+mint_wrapper = "0x8f6ce396d6c4b9c7c992f018e94df010ec5c50835d1c83186c023bfa22df638c"
 ```
 
 ## License

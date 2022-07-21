@@ -6,14 +6,14 @@
 /// - **Owners**, which can create and delete Minters
 /// - **Minters**, which can mint coins to any address
 
-module MintWrapper::MintWrapper {
-    use Std::ASCII;
-    use Std::Errors;
-    use Std::Offer;
-    use Std::Signer;
-    use AptosFramework::Coin::{Self, Coin, MintCapability, BurnCapability};
-    use AptosFramework::TypeInfo;
-    use AptosFramework::Table::{Self, Table};
+module mint_wrapper::mint_wrapper {
+    use std::string;
+    use std::errors;
+    use std::offer;
+    use std::signer;
+    use aptos_framework::coin::{Self, Coin, MintCapability, BurnCapability};
+    use aptos_framework::type_info;
+    use aptos_framework::table::{Self, Table};
 
     /// Must be the owner of the mint wrapper.
     const ENOT_OWNER: u64 = 1;
@@ -56,7 +56,7 @@ module MintWrapper::MintWrapper {
 
     /// Gets the address of a Coin.
     fun get_coin_address<CoinType>(): address {
-        TypeInfo::account_address(&TypeInfo::type_of<CoinType>())
+        type_info::account_address(&type_info::type_of<CoinType>())
     }
 
     /// Creates a new `MintWrapper`.
@@ -78,10 +78,10 @@ module MintWrapper::MintWrapper {
             hard_cap,
         });
         move_to(base, MinterOffers<CoinType> {
-            offers: Table::new(),
+            offers: table::new(),
         });
         Owner<CoinType> {
-            base: Signer::address_of(base)
+            base: signer::address_of(base)
         }
     }
 
@@ -92,10 +92,10 @@ module MintWrapper::MintWrapper {
     ): Coin<CoinType> {
         assert!(
             minter.allowance >= amount,
-            Errors::limit_exceeded(EINSUFFICIENT_ALLOWANCE)
+            errors::limit_exceeded(EINSUFFICIENT_ALLOWANCE)
         );
         minter.allowance = minter.allowance - amount;
-        Coin::mint<CoinType>(amount, &minter.mint_capability)
+        coin::mint<CoinType>(amount, &minter.mint_capability)
     }
 
     /// Creates a new minter with the given allowance.
@@ -103,7 +103,7 @@ module MintWrapper::MintWrapper {
         owner: &signer,
         allowance: u64
     ): Minter<CoinType> acquires Owner, MintWrapper {
-        let owner_cap = borrow_global<Owner<CoinType>>(Signer::address_of(owner));
+        let owner_cap = borrow_global<Owner<CoinType>>(signer::address_of(owner));
         create_minter_with_owner(allowance, owner_cap)
     }
 
@@ -125,14 +125,14 @@ module MintWrapper::MintWrapper {
         recipient: address,
         amount: u64
     ) acquires Minter {
-        let authority_addr = Signer::address_of(authority);
+        let authority_addr = signer::address_of(authority);
         assert!(
             exists<Minter<CoinType>>(authority_addr),
-            Errors::requires_role(ENOT_MINTER)
+            errors::requires_role(ENOT_MINTER)
         );
         let mint_wrapper_minter = borrow_global_mut<Minter<CoinType>>(authority_addr);
         let coin = mint_with_capability(mint_wrapper_minter, amount);
-        Coin::deposit<CoinType>(recipient, coin);
+        coin::deposit<CoinType>(recipient, coin);
     }
 
     /// Creates a new coin and mint_wrapper.
@@ -143,10 +143,10 @@ module MintWrapper::MintWrapper {
         decimals: u64,
         hard_cap: u64
     ) {
-        let (mint_capability, burn_capability) = Coin::initialize<CoinType>(
+        let (mint_capability, burn_capability) = coin::initialize<CoinType>(
             account,
-            ASCII::string(name),
-            ASCII::string(TypeInfo::struct_name(&TypeInfo::type_of<CoinType>())),
+            string::utf8(name),
+            string::utf8(type_info::struct_name(&type_info::type_of<CoinType>())),
             decimals,
             true
         );
@@ -158,9 +158,9 @@ module MintWrapper::MintWrapper {
         account: &signer,
         recipient: address
     ) acquires Owner {
-        Offer::create<Owner<CoinType>>(
+        offer::create<Owner<CoinType>>(
             account,
-            move_from<Owner<CoinType>>(Signer::address_of(account)),
+            move_from<Owner<CoinType>>(signer::address_of(account)),
             recipient
         );
     }
@@ -170,7 +170,7 @@ module MintWrapper::MintWrapper {
         recipient: &signer,
         base: address
     ) {
-        move_to(recipient, Offer::redeem<Owner<CoinType>>(recipient, base));
+        move_to(recipient, offer::redeem<Owner<CoinType>>(recipient, base));
     }
 
     /// Creates a new minter with the given allowance, offering it.
@@ -180,13 +180,13 @@ module MintWrapper::MintWrapper {
         allowance: u64
     ) acquires MinterOffers, Owner, MintWrapper {
         assert!(
-            exists<Owner<CoinType>>(Signer::address_of(owner)),
-            Errors::requires_role(ENOT_OWNER)
+            exists<Owner<CoinType>>(signer::address_of(owner)),
+            errors::requires_role(ENOT_OWNER)
         );
-        let owner_cap = borrow_global<Owner<CoinType>>(Signer::address_of(owner));
+        let owner_cap = borrow_global<Owner<CoinType>>(signer::address_of(owner));
         let minter = create_minter_with_owner(allowance, owner_cap);
         let offers = borrow_global_mut<MinterOffers<CoinType>>(owner_cap.base);
-        Table::add(&mut offers.offers, destination, minter);
+        table::add(&mut offers.offers, destination, minter);
     }
 
     /// Accepts the [Minter] for the `CoinType`.
@@ -195,7 +195,7 @@ module MintWrapper::MintWrapper {
         base: address
     ) acquires MinterOffers {
         let offers = borrow_global_mut<MinterOffers<CoinType>>(base);
-        let minter = Table::remove<address, Minter<CoinType>>(&mut offers.offers, Signer::address_of(recipient));
+        let minter = table::remove<address, Minter<CoinType>>(&mut offers.offers, signer::address_of(recipient));
         move_to(recipient, minter);
     }
 }
