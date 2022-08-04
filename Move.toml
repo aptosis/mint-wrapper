@@ -8,14 +8,19 @@ license = "Apache-2.0"
 title = "Aptosis Mint Wrapper"
 
 [addresses]
+std = "0x1"
 mint_wrapper = "0x8f6ce396d6c4b9c7c992f018e94df010ec5c50835d1c83186c023bfa22df638c"
 
 [dependencies.MoveStdlib]
 git = "https://github.com/aptos-labs/aptos-core.git"
 subdir = "aptos-move/framework/move-stdlib"
-rev = "a3143756d498821f4f51a5970c7ea35d483938b3"
+rev = "7296f138e11113fab6a1e193fc3f18fa7d08bd3e"
 
 [dependencies.AptosFramework]
 git = "https://github.com/aptos-labs/aptos-core.git"
 subdir = "aptos-move/framework/aptos-framework"
-rev = "a3143756d498821f4f51a5970c7ea35d483938b3"
+rev = "7296f138e11113fab6a1e193fc3f18fa7d08bd3e"
+
+[dependencies.inbox]
+git = "https://github.com/aptosis/inbox.git"
+rev = "0fb8fe946250e85c3fc10ca095a22dcc03682882"

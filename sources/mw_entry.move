@@ -41,11 +41,8 @@ module mint_wrapper::mw_entry {
     }
 
     /// Accepts the owner.
-    public entry fun accept_owner<CoinType>(
-        recipient: &signer,
-        base: address
-    ) {
-        mint_wrapper::accept_owner<CoinType>(recipient, base);
+    public entry fun accept_owner<CoinType>(recipient: &signer) {
+        mint_wrapper::accept_owner<CoinType>(recipient);
     }
 
     /// Accepts the minter if possible.

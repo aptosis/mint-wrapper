@@ -8,12 +8,13 @@
 
 module mint_wrapper::mint_wrapper {
     use std::string;
-    use std::errors;
-    use std::offer;
+    use std::error;
     use std::signer;
     use aptos_framework::coin::{Self, Coin, MintCapability, BurnCapability};
     use aptos_framework::type_info;
     use aptos_framework::table::{Self, Table};
+
+    use inbox::inbox;
 
     /// Must be the owner of the mint wrapper.
     const ENOT_OWNER: u64 = 1;
@@ -92,7 +93,7 @@ module mint_wrapper::mint_wrapper {
     ): Coin<CoinType> {
         assert!(
             minter.allowance >= amount,
-            errors::limit_exceeded(EINSUFFICIENT_ALLOWANCE)
+            error::resource_exhausted(EINSUFFICIENT_ALLOWANCE)
         );
         minter.allowance = minter.allowance - amount;
         coin::mint<CoinType>(amount, &minter.mint_capability)
@@ -128,7 +129,7 @@ module mint_wrapper::mint_wrapper {
         let authority_addr = signer::address_of(authority);
         assert!(
             exists<Minter<CoinType>>(authority_addr),
-            errors::requires_role(ENOT_MINTER)
+            error::permission_denied(ENOT_MINTER)
         );
         let mint_wrapper_minter = borrow_global_mut<Minter<CoinType>>(authority_addr);
         let coin = mint_with_capability(mint_wrapper_minter, amount);
@@ -158,19 +159,17 @@ module mint_wrapper::mint_wrapper {
         account: &signer,
         recipient: address
     ) acquires Owner {
-        offer::create<Owner<CoinType>>(
+        inbox::offer<Owner<CoinType>>(
             account,
+            recipient,
             move_from<Owner<CoinType>>(signer::address_of(account)),
-            recipient
+            86400,
         );
     }
 
     /// Accepts the owner.
-    public fun accept_owner<CoinType>(
-        recipient: &signer,
-        base: address
-    ) {
-        move_to(recipient, offer::redeem<Owner<CoinType>>(recipient, base));
+    public fun accept_owner<CoinType>(recipient: &signer) {
+        move_to(recipient, inbox::accept<Owner<CoinType>>(recipient, 0));
     }
 
     /// Creates a new minter with the given allowance, offering it.
@@ -181,7 +180,7 @@ module mint_wrapper::mint_wrapper {
     ) acquires MinterOffers, Owner, MintWrapper {
         assert!(
             exists<Owner<CoinType>>(signer::address_of(owner)),
-            errors::requires_role(ENOT_OWNER)
+            error::permission_denied(ENOT_OWNER)
         );
         let owner_cap = borrow_global<Owner<CoinType>>(signer::address_of(owner));
         let minter = create_minter_with_owner(allowance, owner_cap);
